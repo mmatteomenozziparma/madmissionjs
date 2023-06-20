@@ -10,15 +10,7 @@ const CASELLA_0 = 2;
 const lCella=canvas.width/3;
 const aCella=canvas.height/3;
 canvas.addEventListener('click',OnMouseDown(e)); 
-function NuovaPartita()
-{
-  for(let i = 0; i < 3; i++)
-      for(let j = 0; j < 3; j++)
-         Matrice[i,j] = CASELLA_VUOTA;
-  GiocaX = false;
-  Contatore = 0;
-  Redraw();
-}
+
 
 function DrawTable()
 {
@@ -61,14 +53,17 @@ function OnMouseDown(event)
           DrawTable();
         },100);
       }
-      if(pep()) {
+      else if(pep()) {
         setTimeout(()=>{
             alert('pareggio');
             DrawTable();
         },100);
+        else{
+        giocatorecorrete=(giocatotrecorrente==='X')?'X':'O';
+        }
       }
-    }
-}
+  }
+
 function winner()
   {
      //Controllo Righe
@@ -109,6 +104,7 @@ function pep(){
 function resetta(){
   Matrice.foreach(row=>rowFill('0'));
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  DrawTable();
   giocatorecorrente='x';
 }
 ;
