@@ -1,0 +1,11 @@
+.Rossa {
+  background-color: red;
+}
+
+.Rossa[Attributo="ciao"] {
+  border: 5px dotted black;
+}
+
+.Blu {
+  background-color : blue;
+}
