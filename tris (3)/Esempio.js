@@ -3,75 +3,123 @@ const ctx = canvas.getContext('2d');
 
 let Matrice = [[0,0,0],[0,0,0],[0,0,0]];
 
-let giocatorecorrente='X';
+
 const CASELLA_VUOTA = 0;
 const CASELLA_X = 1;
 const CASELLA_0 = 2;
-const lCella=canvas.width/3;
-const aCella=canvas.height/3;
-canvas.addEventListener('click',OnMouseDown(e)); 
 
+let GiocatoreCorrente = CASELLA_X;
+var Contatore = 0;
+let Spaziatura=10;
+const LarghezzaCella = canvas.width / 3;
+const AltezzaCella = canvas.height / 3;
+
+canvas.addEventListener('click',OnMouseDown); 
+
+function OnMouseDown(Evento)
+{
+    const Rectangle = canvas.getBoundingClientRect();
+    const OffsetX   = Evento.clientX - Rectangle.left;
+    const OffsetY   = Evento.clientY - Rectangle.top;
+    const Riga      = Math.floor(OffsetX / AltezzaCella );
+    const Colonna   = Math.floor(OffsetY / LarghezzaCella );
+
+    if (Matrice[Riga][Colonna] === CASELLA_VUOTA)
+    {
+      Matrice[Riga][Colonna] = GiocatoreCorrente;
+      Contatore ++;
+      Redraw();
+      /*if (Winner())
+      {
+        setTimeout(function()
+        {
+          alert(GiocatoreCorrente + ' hai vinto');
+          NuovaPartita();
+        },100);
+      }
+      else 
+      {
+        if(Contatore == 9) 
+        {
+          setTimeout(function()
+          {
+              alert('pareggio');
+              NuovaPartita();
+          },100);
+        }
+        else giocatorecorrete = (GiocatoreCorrente === CASELLA_X) ? CASELLA_X : CASELLA_0;
+      }*/
+   }
+}
 
 function DrawTable()
 {
   // Disegni il tabellone di gioco del tris dentro la canvas
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.beginPath();
-  ctx.moveTo(lcella, 0);
-  ctx.lineTo(lcella,canavas.height);
-  ctx.moveTo(lcella*2, 0);
-  ctx.lineTo(lcella*2, canavas.height);
-  ctx.moveTo(0, acella);
-  ctx.lineTo(canvas.width, acella);
-  ctx.moveTo(0, acella*2);
-  ctx.lineTo(canavas.width, acella*2);
+  ctx.moveTo(LarghezzaCella, 0);
+  ctx.lineTo(LarghezzaCella,canvas.height);
+  ctx.moveTo(LarghezzaCella*2, 0);
+  ctx.lineTo(LarghezzaCella*2, canvas.height);
+  ctx.moveTo(0, AltezzaCella);
+  ctx.lineTo(canvas.width, AltezzaCella);
+  ctx.moveTo(0, AltezzaCella*2);
+  ctx.lineTo(canvas.width, AltezzaCella*2);
   ctx.stroke();
   
 }
+function DisegnaCroce(Riga,Colonna) 
+  { let Cells=AltezzaCella*LarghezzaCella;
+    let y=Riga*Cells+Spaziatura;
+    let x=Colonna*Cells+Spaziatura;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Cells - Spaziatura * 2, y + Cells - Spaziatura * 2);
+    ctx.moveTo(x, y + Cells - Spaziatura* 2);
+    ctx.lineTo(x + Cells - Spaziatura * 2, y);
+    ctx.stroke();
+  }
+function DisegnaCerchio(Riga,Colonna) 
+  {
+    var CentroX = Colonna * Cells + Cells / 2;
+    var CentroY = Riga * Cells + Cells / 2;
+    var Raggio = (Cells - spacing * 2) / 2;
 
-function Redraw(colonne,righe,giocatore)
-{
-    const rectangle=canvas.getBundingClientRect();
-    const x= righe*lcella+lcella/2;
-    const y= colonne*acella+acella/2;
-    ctx.font='45 ';
-    ctx.fillText(giocatore,righe,colonne);
-}
-
-function OnMouseDown(event)
-{
-    const rectangle=canvas.getBundingClientRect();
-    const offsetX = event.clientX - rectangle.left;//movimento mouse asse orizzontale 
-    const offsetY = event.clientY - rectangle.top;//movimemto mouse asse verticale
-    const righe = Math.floor(offsetX /acella );
-    const colonne = Math.floor(offsetY /lcella );
-    if (Matrice[righe][colonne]==='0'){
-      Matrice[righe][colonne]==giocatatorecorrente;
-      Redraw(colonne,righe,giocatorecorrente);
-      if (winner()){
-        setTimeout(()=>{
-          alert(giocatorecorrente+ ' hai vinto');
-          DrawTable();
-        },100);
-      }
-      else if(pep()) {
-        setTimeout(()=>{
-            alert('pareggio');
-            DrawTable();
-        },100);
-        else{
-        giocatorecorrete=(giocatotrecorrente==='X')?'X':'O';
+    ctx.beginPath();
+    ctx.arc(CentroX, CentroY, Raggio, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+function DrawPosizioni()
+  {
+    for(let i=0;i<3;i++)
+    {
+      for (let j = 0; j < 3;j++) 
+      {
+        if (Matrice[i][j]==CASELLA_0) 
+        {
+          CASELLA_0=DisegnaCerchio(Riga,Colonna);
+        }
+        if (Matrice[i][j]==CASELLA_X) 
+        {
+          CASELLA_X=DisegnaCroce(Riga,Colonna);
         }
       }
+    }
   }
+
+function Redraw()
+{
+    DrawTable();
+    DrawPosizioni();
+}
+
 
 function winner()
   {
      //Controllo Righe
-     for (let i = 0; i < 3; i++) {
-      if ([i][0] === giocatorecorrente && Matrice[i][1] === giocatorecorrente && Matrice[i][2] === giocatorecorrente) {
-        return true;
-      }
-    }
+     for (let i = 0; i < 3; i++) 
+         if (Matrice[i][0] === giocatorecorrente && Matrice[i][1] === giocatorecorrente && Matrice[i][2] === giocatorecorrente)   
+            return true;
 
     // Controllo vittoria colonne 
     for (let j = 0; j < 3; j++) {
@@ -84,7 +132,8 @@ function winner()
     if (
       (Matrice[0][0] === giocatorecorrente && Matrice[1][1] === giocatorecorrente && Matrice[2][2] === giocatorecorrente) ||
       (Matrice[0][2] === giocatorecorrente && Matrice[1][1] === giocatorecorrente && Matrice[2][0] === giocatorecorrente)
-    ) {
+      ) 
+    {
       return true;
     }
 
@@ -92,21 +141,15 @@ function winner()
    
     
   }
-function pep(){
-   for(let i=0;i<=2;i++){
-    for(let j=0;j<=2;j++)
-    {
-      return Matrice[i][j]=(Matrice[i][j]==='')?  false : true ;
-    }
 
-   }
-  }
-function resetta(){
-  Matrice.foreach(row=>rowFill('0'));
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+function NuovaPartita()
+{
+  /*Matrice.foreach(row=>rowFill('0'));*/
+  Conteggio = 0;
+  GiocatoreCorrente = CASELLA_X;
   DrawTable();
-  giocatorecorrente='x';
 }
-;
 
-DrawTable();
+
+NuovaPartita();
