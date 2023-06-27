@@ -83,7 +83,7 @@ function DisegnaCerchio(Riga,Colonna)
   {
     var CentroX = Colonna * Cells + Cells / 2;
     var CentroY = Riga * Cells + Cells / 2;
-    var Raggio = (Cells - spacing * 2) / 2;
+    var Raggio = (Cells - Spaziatura * 2) / 2;
 
     ctx.beginPath();
     ctx.arc(CentroX, CentroY, Raggio, 0, 2 * Math.PI);
